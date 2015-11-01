@@ -35,6 +35,11 @@ public class DeletePreviousWordCommand extends Command {
         return false;
     }
 
+    @Override
+    boolean isStuckable() {
+        return true;
+    }
+
     private static boolean deletePreviousWord(Project project){
         String text = project.getText();
         int position = project.getCursor();

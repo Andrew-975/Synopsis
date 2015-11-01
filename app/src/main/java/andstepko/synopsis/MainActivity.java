@@ -16,6 +16,7 @@ import andstepko.synopsis.logic.Project;
 import andstepko.synopsis.logic.Shortcut;
 import andstepko.synopsis.logic.commands.Command;
 import andstepko.synopsis.logic.commands.CommandBank;
+import andstepko.synopsis.logic.commands.CommandManager;
 
 public class MainActivity extends Activity {
 
@@ -112,7 +113,7 @@ public class MainActivity extends Activity {
                     return false;
                 }
 
-                command.execute();
+                CommandManager.getInstance().execute(command);
                 return true;
             }
         });
