@@ -2,7 +2,6 @@ package andstepko.synopsis;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -14,24 +13,18 @@ import android.widget.TextView;
 import andstepko.synopsis.logic.KeyCombination;
 import andstepko.synopsis.logic.Preferences;
 import andstepko.synopsis.logic.Project;
-import andstepko.synopsis.logic.actions.Action;
-import andstepko.synopsis.logic.actions.DeleteForwardWordAction;
-import andstepko.synopsis.logic.actions.DeletePreviousWordAction;
+import andstepko.synopsis.logic.Shortcut;
+import andstepko.synopsis.logic.commands.Command;
+import andstepko.synopsis.logic.commands.CommandBank;
 
 public class MainActivity extends Activity {
 
     private static MainActivity INSTANCE;
 
-    private TextView helloWorld;
     private EditText mainEditText;
-    private EditText logEditText;
-
-    private boolean insertMode;
+    private TextView tabsTextView;
+    private TextView logsTextView;
     private Project project = new Project("");
-    private Action methods[] = new Action[]{
-        new DeletePreviousWordAction(),
-            new DeleteForwardWordAction()
-    };
 
     //region get-set
     public Project getProjectClone() {
@@ -98,42 +91,34 @@ public class MainActivity extends Activity {
 
         INSTANCE = this;
 
+        tabsTextView = (TextView)findViewById(R.id.tabsTextView);
         mainEditText = (EditText)findViewById(R.id.mainEditText);
-        logEditText = (EditText)findViewById(R.id.logEditText);
+        logsTextView = (TextView)findViewById(R.id.logsTextView);
 
 
         mainEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 KeyCombination keyCombination = new KeyCombination(keyCode, event);
-                //log("keyCombination: " + keyCombination.toString());
 
-                int actionIndex = Preferences.INSTANCE.shortcuts.getShortcutIndex(keyCombination);
-                return performAction(actionIndex);
+                Shortcut shortcut = Preferences.INSTANCE.shortcuts.getShortcut(keyCombination);
+                if (shortcut == null) {
+                    return false;
+                }
+
+                logRecord(shortcut.toString());
+                Command command = CommandBank.getInstance().getCommand(shortcut);
+                if (command == null) {
+                    return false;
+                }
+
+                command.execute();
+                return true;
             }
         });
     }
 
-    private boolean performActionOne(){
-        helloWorld.setBackgroundColor(Color.RED);
-        return true;
-    }
-
-    private boolean performActionTwo(){
-        helloWorld.setBackgroundColor(Color.GREEN);
-        return true;
-    }
-
-    private boolean performAction(int index){
-        if((index >= methods.length) || (index < 0)){
-            return false;
-        }
-
-        methods[index].perform();
-        return true;
-    }
-
-    public void log(String message){
-        logEditText.setText(logEditText.getText().toString() + " " + message);
+    public void logRecord(String message) {
+        logsTextView.setText(message);
     }
 }

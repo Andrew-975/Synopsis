@@ -35,4 +35,9 @@ public class Shortcut {
         return (this.getName().equals(otherShortcut.getName()))
                 && (this.getKeyCombination().equals(otherShortcut.getKeyCombination()));
     }
+
+    @Override
+    public String toString() {
+        return getName() + keyCombination.toString();
+    }
 }

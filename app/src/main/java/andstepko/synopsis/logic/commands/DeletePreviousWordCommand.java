@@ -1,6 +1,4 @@
-package andstepko.synopsis.logic.actions;
-
-import android.util.Log;
+package andstepko.synopsis.logic.commands;
 
 import java.util.ArrayList;
 
@@ -10,7 +8,7 @@ import andstepko.synopsis.logic.Project;
 /**
  * Created by andrew on 28.09.15.
  */
-public class DeletePreviousWordAction extends Action{
+public class DeletePreviousWordCommand extends Command {
 
     private static final ArrayList<Character> punctuationSymbols = new ArrayList<Character>();
 
@@ -25,11 +23,16 @@ public class DeletePreviousWordAction extends Action{
     }
 
     @Override
-    public boolean perform() {
+    public boolean execute() {
         Project project = MainActivity.getInstance().getProjectClone();
         boolean result = deletePreviousWord(project);
         MainActivity.getInstance().setProject(project);
         return result;
+    }
+
+    @Override
+    public boolean unexecute() {
+        return false;
     }
 
     private static boolean deletePreviousWord(Project project){
