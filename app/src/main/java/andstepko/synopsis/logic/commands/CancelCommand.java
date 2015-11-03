@@ -1,18 +1,16 @@
 package andstepko.synopsis.logic.commands;
 
-import android.text.Editable;
-
-import andstepko.synopsis.MainActivity;
 import andstepko.synopsis.SynopsisMainActivity;
 
 /**
- * Created by andrew on 29.09.15.
+ * Created by andstepko on 03.11.15.
  */
-public class DeleteNextWordCommand implements Command {
+public class CancelCommand implements Command {
 
     @Override
     public boolean execute(SynopsisMainActivity synopsisMainActivity) {
-        return false;
+        CommandManager commandManager = synopsisMainActivity.getCommandManager();
+        return commandManager.stepBack();
     }
 
     @Override

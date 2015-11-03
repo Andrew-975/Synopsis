@@ -1,14 +1,18 @@
 package andstepko.synopsis.logic.commands;
 
+import android.text.Editable;
+import android.widget.EditText;
+
 import java.util.ArrayList;
 
 import andstepko.synopsis.MainActivity;
+import andstepko.synopsis.SynopsisMainActivity;
 import andstepko.synopsis.logic.Project;
 
 /**
  * Created by andrew on 28.09.15.
  */
-public class DeletePreviousWordCommand extends Command {
+public class DeletePreviousWordCommand implements Command {
 
     private static final ArrayList<Character> punctuationSymbols = new ArrayList<Character>();
 
@@ -22,70 +26,85 @@ public class DeletePreviousWordCommand extends Command {
         punctuationSymbols.add(new Character('!'));
     }
 
+    private String removedString = "";
+    int removeFrom;
+
     @Override
-    public boolean execute() {
-        Project project = MainActivity.getInstance().getProjectClone();
-        boolean result = deletePreviousWord(project);
-        MainActivity.getInstance().setProject(project);
+    public boolean execute(SynopsisMainActivity synopsisMainActivity) {
+        boolean result = deletePreviousWord(synopsisMainActivity.getTextField(),
+                synopsisMainActivity.getTextField().getSelectionEnd());
         return result;
     }
 
     @Override
-    public boolean unexecute() {
-        return false;
-    }
+    public boolean unexecute(SynopsisMainActivity synopsisMainActivity) {
 
-    @Override
-    boolean isStuckable() {
-        return true;
-    }
+        EditText editText = synopsisMainActivity.getTextField();
+        Editable editable = editText.getEditableText();
+        int initialCursor = editText.getSelectionEnd();
 
-    private static boolean deletePreviousWord(Project project){
-        String text = project.getText();
-        int position = project.getCursor();
-
-        if(position == 0){
+        if(removedString.length() == 0){
             return false;
         }
 
-        String secondPart = text.substring(position, text.length());
-        position -= 1;
+        editable.insert(removeFrom, removedString);
+        editText.setSelection(initialCursor + removedString.length());
+        return true;
+    }
 
-        while((position >= 0) && (text.charAt(position) == ' ')){
-            // Delete spaces.
-            position--;
+    @Override
+    public boolean isStuckable() {
+        return true;
+    }
+
+    private boolean deletePreviousWord(EditText editText, int initialCursor){
+        Editable editable = editText.getEditableText();
+        int curCursor = initialCursor;
+
+        if(curCursor == 0){
+            return false;
         }
 
-        if(position < 0) {
-            project.setText(secondPart);
-            project.setCursor(0);
+        //String secondPart = text.substring(cursorPosition, text.length());
+        curCursor -= 1;
+
+        // Delete leading spaces.
+        while((curCursor >= 0) && (editable.charAt(curCursor) == ' ')){
+            // Delete spaces.
+            curCursor--;
+        }
+
+        if(curCursor < 0) {
+            // Got start of the text
+            removedString = editable.subSequence(0, initialCursor).toString();
+            removeFrom = 0;
+            editable.delete(0, initialCursor);
+            editText.setSelection(0);
             return true;
         }
 
-        if(punctuationSymbols.contains(new Character(text.charAt(position)))){
-            if(--position > 0) {
-                project.setText(text.substring(0, position + 1) + secondPart);
-                project.setCursor(position + 1);
-                return true;
-            }
-            else{
-                // Deleted straight to start of the text.
-                project.setText(secondPart);
-                project.setCursor(0);
-                return true;
-            }
+        if(punctuationSymbols.contains(new Character(editable.charAt(curCursor)))){
+            removedString = editable.subSequence(curCursor, initialCursor).toString();
+            removeFrom = curCursor;
+            editable.delete(curCursor, initialCursor);
+            editText.setSelection(curCursor);
+            return true;
         }
 
-        while((position >= 0) && ((Character.isLetter(text.charAt(position))) ||
-                                            (text.charAt(position) == '`'))){
-            position--;
+        // Before spaces is not a punctuation symbol.
+        while((curCursor >= 0) && (!punctuationSymbols.contains(editable.charAt(curCursor)) &&
+                                                editable.charAt(curCursor) != ' ')){
+            curCursor--;
         }
 
-        if(position < 0) {
-            project.setText(secondPart);
+        if(curCursor < 0) {
+            curCursor = 0;
         }
-        project.setText(text.substring(0, position + 1) + secondPart);
-        project.setCursor(position + 1);
+
+        removedString = editable.subSequence(curCursor, initialCursor).toString();
+        removeFrom = curCursor;
+        editable.delete(curCursor, initialCursor);
+        editText.setSelection(curCursor);
         return true;
     }
 }

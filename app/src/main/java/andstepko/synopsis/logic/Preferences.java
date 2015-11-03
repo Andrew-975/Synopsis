@@ -33,5 +33,9 @@ public class Preferences {
                 new KeyCombination(KeyEvent.KEYCODE_FORWARD_DEL, true, false, false)));
         shortcutList.add(new Shortcut(ShortcutNames.TEST,
                 new KeyCombination(KeyEvent.KEYCODE_T, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.CANCEL,
+                new KeyCombination(KeyEvent.KEYCODE_Z, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.UNCANCEL,
+                new KeyCombination(KeyEvent.KEYCODE_Z, true, false, true)));
     }
 }

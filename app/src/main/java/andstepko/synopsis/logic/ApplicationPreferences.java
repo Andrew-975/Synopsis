@@ -1,24 +1,32 @@
 package andstepko.synopsis.logic;
 
+import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
 
+import andstepko.synopsis.logic.commands.CancelCommand;
 import andstepko.synopsis.logic.commands.Command;
 import andstepko.synopsis.logic.commands.DeleteNextWordCommand;
 import andstepko.synopsis.logic.commands.DeletePreviousWordCommand;
 import andstepko.synopsis.logic.commands.TestCommand;
+import andstepko.synopsis.logic.commands.UncancelCommand;
 
 /**
  * Created by andrew on 13.09.15.
  */
 public class ApplicationPreferences {
 
-    private static HashMap<String, Command> commandHashMap;
+    private static HashMap<String, Class> commandHashMap;
     static {
-        commandHashMap = new HashMap<String, Command>();
-        commandHashMap.put(ShortcutNames.DELETE_NEXT_WORD, new DeleteNextWordCommand());
-        commandHashMap.put(ShortcutNames.DELETE_PREVIOUS_WORD, new DeletePreviousWordCommand());
-        commandHashMap.put(ShortcutNames.TEST, new TestCommand());
+        commandHashMap = new HashMap<String, Class>();
+        commandHashMap.put(ShortcutNames.DELETE_NEXT_WORD, DeleteNextWordCommand.class);
+        commandHashMap.put(ShortcutNames.DELETE_PREVIOUS_WORD, DeletePreviousWordCommand.class);
+
+        //commandHashMap.put(ShortcutNames.TEST, TestCommand.class);
+        commandHashMap.put(ShortcutNames.TEST, DeletePreviousWordCommand.class);
+
+        commandHashMap.put(ShortcutNames.CANCEL, CancelCommand.class);
+        commandHashMap.put(ShortcutNames.UNCANCEL, UncancelCommand.class);
     }
 
     private static ApplicationPreferences ourInstance = new ApplicationPreferences();
@@ -29,7 +37,7 @@ public class ApplicationPreferences {
 
     // Non-static
     private Preferences preferences;
-    private HashMap<KeyCombination, Command> shortcutHashMap = new HashMap<KeyCombination, Command>();
+    private HashMap<KeyCombination, Class> shortcutHashMap = new HashMap<KeyCombination, Class>();
 
     public Preferences getPreferences() {
         return preferences;
@@ -49,8 +57,23 @@ public class ApplicationPreferences {
         this(new Preferences());
     }
 
-    public Command getCommand(KeyCombination keyCombination){
-        Command command = shortcutHashMap.get(keyCombination);
+    public Command getCommand(KeyCombination keyCombination) {
+
+        Class clazz = shortcutHashMap.get(keyCombination);
+
+        if(clazz == null){
+            return null;
+        }
+
+        Command command = null;
+        try {
+            command = (Command)clazz.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
         return command;
     }
 
@@ -59,10 +82,10 @@ public class ApplicationPreferences {
         int count = 0;
 
         for(Shortcut shortcut : shortcuts){
-            Command command = commandHashMap.get(shortcut.getName());
-            if(command != null){
+            Class commandClass = commandHashMap.get(shortcut.getName());
+            if(commandClass != null){
                 // Such an appShortcut exists in the application.
-                shortcutHashMap.put(shortcut.getKeyCombination(), command);
+                shortcutHashMap.put(shortcut.getKeyCombination(), commandClass);
                 count++;
             }
         }

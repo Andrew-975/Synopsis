@@ -3,11 +3,14 @@ package andstepko.synopsis.logic.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import andstepko.synopsis.MainActivity;
+import andstepko.synopsis.SynopsisMainActivity;
+
 /**
  * Created by andstepko on 02.11.15.
  */
 public class CommandManager {
-    private static CommandManager ourInstance = new CommandManager();
+    private static CommandManager ourInstance = new CommandManager(MainActivity.getInstance());
 
     public static CommandManager getInstance() {
         return ourInstance;
@@ -15,8 +18,10 @@ public class CommandManager {
 
     private List<Command> commandStack = new ArrayList<Command>();
     private int currentIndex = 0;
+    private SynopsisMainActivity synopsisMainActivity;
 
-    private CommandManager() {
+    private CommandManager(SynopsisMainActivity synopsisMainActivity) {
+        this.synopsisMainActivity = synopsisMainActivity;
     }
 
     public boolean execute(Command command){
@@ -31,7 +36,7 @@ public class CommandManager {
             commandStack.add(command);
             currentIndex++;
         }
-        return command.execute();
+        return command.execute(synopsisMainActivity);
     }
 
     public boolean stepBack(){
@@ -41,7 +46,7 @@ public class CommandManager {
 
         currentIndex--;
         Command lastCommand = commandStack.get(currentIndex);
-        return lastCommand.unexecute();
+        return lastCommand.unexecute(synopsisMainActivity);
     }
 
     public boolean stepForward(){
@@ -51,7 +56,7 @@ public class CommandManager {
         }
 
         // Have a command to execute it back.
-        boolean result = commandStack.get(currentIndex).execute();
+        boolean result = commandStack.get(currentIndex).execute(synopsisMainActivity);
         currentIndex++;
 
         return result;
