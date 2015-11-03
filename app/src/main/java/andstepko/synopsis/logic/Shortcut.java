@@ -20,6 +20,8 @@ public class Shortcut {
         this.keyCombination = keyCombination;
     }
 
+    public Shortcut(){}
+
     public Shortcut(String name, KeyCombination keyCombination) {
         this.name = name;
         this.keyCombination = keyCombination;
@@ -37,7 +39,14 @@ public class Shortcut {
     }
 
     @Override
+    public int hashCode() {
+
+        //TODO
+        return super.hashCode();
+    }
+
+    @Override
     public String toString() {
-        return getName() + keyCombination.toString();
+        return getName() + " " + keyCombination.toString();
     }
 }

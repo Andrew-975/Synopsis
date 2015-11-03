@@ -7,24 +7,25 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import andstepko.synopsis.logic.KeyCombination;
-import andstepko.synopsis.logic.Preferences;
+import andstepko.synopsis.logic.ApplicationPreferences;
 import andstepko.synopsis.logic.Project;
-import andstepko.synopsis.logic.Shortcut;
 import andstepko.synopsis.logic.commands.Command;
-import andstepko.synopsis.logic.commands.CommandBank;
 import andstepko.synopsis.logic.commands.CommandManager;
 
 public class MainActivity extends Activity {
 
     private static MainActivity INSTANCE;
 
-    private EditText mainEditText;
+    public EditText mainEditText;
     private TextView tabsTextView;
     private TextView logsTextView;
+    //
+    Button testButton;
     private Project project = new Project("");
 
     //region get-set
@@ -45,7 +46,6 @@ public class MainActivity extends Activity {
         }
 
         String text = project.getText();
-        int cursor = project.getCursor();
         if(text == null){
             return;
         }
@@ -95,20 +95,37 @@ public class MainActivity extends Activity {
         tabsTextView = (TextView)findViewById(R.id.tabsTextView);
         mainEditText = (EditText)findViewById(R.id.mainEditText);
         logsTextView = (TextView)findViewById(R.id.logsTextView);
+        // FIXME removeme after debug
+        testButton = (Button)findViewById(R.id.test_btn);
 
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyCombination keyCombination = new KeyCombination(
+                        KeyEvent.KEYCODE_T, true, false, false);
+                logRecord(keyCombination.toString());
+
+                Command command = ApplicationPreferences.getInstance().getCommand(keyCombination);
+                if (command == null) {
+                    return;
+                }
+                CommandManager.getInstance().execute(command);
+            }
+        });
+        //
 
         mainEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                KeyCombination keyCombination = new KeyCombination(keyCode, event);
 
-                Shortcut shortcut = Preferences.INSTANCE.shortcuts.getShortcut(keyCombination);
-                if (shortcut == null) {
+                if (event.getAction()!=KeyEvent.ACTION_DOWN){
                     return false;
                 }
 
-                logRecord(shortcut.toString());
-                Command command = CommandBank.getInstance().getCommand(shortcut);
+                KeyCombination keyCombination = new KeyCombination(keyCode, event);
+                logRecord(keyCombination.toString());
+
+                Command command = ApplicationPreferences.getInstance().getCommand(keyCombination);
                 if (command == null) {
                     return false;
                 }

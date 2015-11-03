@@ -39,14 +39,6 @@ public class KeyCombination {
         this(keyCode, keyEvent.isCtrlPressed(), keyEvent.isAltPressed(), keyEvent.isShiftPressed());
     }
 
-//    public boolean isValid(){
-//        return control || alt || shift;
-//    }
-//
-//    public static boolean isValid(KeyEvent keyEvent){
-//        return keyEvent.isCtrlPressed() || keyEvent.isAltPressed() || keyEvent.isShiftPressed();
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null)
@@ -62,11 +54,11 @@ public class KeyCombination {
     public int hashCode() {
         int result = keyCode;
         if(control)
-            result += 1000;
+            result += 50000;
         if(alt)
-            result += 3000;
+            result += 30000;
         if(shift)
-            result += 5000;
+            result += 10000;
 
         return result;
     }
