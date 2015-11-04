@@ -33,9 +33,17 @@ public class Preferences {
                 new KeyCombination(KeyEvent.KEYCODE_FORWARD_DEL, true, false, false)));
         shortcutList.add(new Shortcut(ShortcutNames.TEST,
                 new KeyCombination(KeyEvent.KEYCODE_T, true, false, false)));
+
         shortcutList.add(new Shortcut(ShortcutNames.CANCEL,
                 new KeyCombination(KeyEvent.KEYCODE_Z, true, false, false)));
         shortcutList.add(new Shortcut(ShortcutNames.UNCANCEL,
                 new KeyCombination(KeyEvent.KEYCODE_Z, true, false, true)));
+
+        shortcutList.add(new Shortcut(ShortcutNames.COPY,
+                new KeyCombination(KeyEvent.KEYCODE_C, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.PASTE,
+                new KeyCombination(KeyEvent.KEYCODE_V, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.CUT,
+                new KeyCombination(KeyEvent.KEYCODE_X, true, false, false)));
     }
 }

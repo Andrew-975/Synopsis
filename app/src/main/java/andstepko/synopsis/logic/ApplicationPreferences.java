@@ -6,8 +6,11 @@ import java.util.HashMap;
 
 import andstepko.synopsis.logic.commands.CancelCommand;
 import andstepko.synopsis.logic.commands.Command;
+import andstepko.synopsis.logic.commands.CopyCommand;
+import andstepko.synopsis.logic.commands.CutCommand;
 import andstepko.synopsis.logic.commands.DeleteNextWordCommand;
 import andstepko.synopsis.logic.commands.DeletePreviousWordCommand;
+import andstepko.synopsis.logic.commands.PasteCommand;
 import andstepko.synopsis.logic.commands.TestCommand;
 import andstepko.synopsis.logic.commands.UncancelCommand;
 
@@ -27,6 +30,10 @@ public class ApplicationPreferences {
 
         commandHashMap.put(ShortcutNames.CANCEL, CancelCommand.class);
         commandHashMap.put(ShortcutNames.UNCANCEL, UncancelCommand.class);
+
+        commandHashMap.put(ShortcutNames.COPY, CopyCommand.class);
+        commandHashMap.put(ShortcutNames.PASTE, PasteCommand.class);
+        commandHashMap.put(ShortcutNames.CUT, CutCommand.class);
     }
 
     private static ApplicationPreferences ourInstance = new ApplicationPreferences();

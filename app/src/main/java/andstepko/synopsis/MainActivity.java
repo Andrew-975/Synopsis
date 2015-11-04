@@ -16,6 +16,7 @@ import andstepko.synopsis.logic.ApplicationPreferences;
 import andstepko.synopsis.logic.Project;
 import andstepko.synopsis.logic.commands.Command;
 import andstepko.synopsis.logic.commands.CommandManager;
+import andstepko.synopsis.logic.commands.DeletePreviousWordCommand;
 
 public class MainActivity extends Activity implements SynopsisMainActivity {
 
@@ -26,6 +27,7 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
     private TextView logsTextView;
     //
     Button testButton;
+    Button testButton2;
     private Project project = new Project("");
 
     //region get-set
@@ -99,24 +101,30 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
         logsTextView = (TextView)findViewById(R.id.logsTextView);
         // FIXME removeme after debug
         testButton = (Button)findViewById(R.id.test_btn);
+        testButton2 = (Button)findViewById(R.id.test_btn2);
 
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                KeyCombination keyCombination = new KeyCombination(
-//                        KeyEvent.KEYCODE_T, true, false, false);
-//                logRecord(keyCombination.toString());
-//
-//                Command command = ApplicationPreferences.getInstance().getCommand(keyCombination);
-//                if (command == null) {
-//                    return;
-//                }
-//                CommandManager.getInstance().execute(command);
-
-                CommandManager.getInstance().stepForward();
+                CommandManager.getInstance().execute(new DeletePreviousWordCommand());
             }
         });
-        //
+
+        testButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyCombination keyCombination = new KeyCombination(
+                        KeyEvent.KEYCODE_V, true, false, false);
+                logRecord(keyCombination.toString());
+
+                Command command = ApplicationPreferences.getInstance().getCommand(keyCombination);
+                if (command == null) {
+                    return;
+                }
+                CommandManager.getInstance().execute(command);
+            }
+        });
+
 
         mainEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override

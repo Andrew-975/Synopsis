@@ -5,25 +5,34 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-import andstepko.synopsis.MainActivity;
 import andstepko.synopsis.SynopsisMainActivity;
-import andstepko.synopsis.logic.Project;
 
 /**
  * Created by andrew on 28.09.15.
  */
 public class DeletePreviousWordCommand implements Command {
 
-    private static final ArrayList<Character> punctuationSymbols = new ArrayList<Character>();
+    private static final ArrayList<Character> separationSymbols = new ArrayList<Character>();
+    private static final ArrayList<Character> spaceSymbols = new ArrayList<Character>();
 
     static{
-        punctuationSymbols.add(new Character('.'));
-        punctuationSymbols.add(new Character(','));
-        punctuationSymbols.add(new Character('-'));
-        punctuationSymbols.add(new Character(';'));
-        punctuationSymbols.add(new Character(':'));
-        punctuationSymbols.add(new Character('?'));
-        punctuationSymbols.add(new Character('!'));
+        separationSymbols.add(new Character('.'));
+        separationSymbols.add(new Character(','));
+        separationSymbols.add(new Character('-'));
+        separationSymbols.add(new Character(';'));
+        separationSymbols.add(new Character(':'));
+        separationSymbols.add(new Character('?'));
+        separationSymbols.add(new Character('!'));
+        separationSymbols.add(new Character('('));
+        separationSymbols.add(new Character(')'));
+        separationSymbols.add(new Character('{'));
+        separationSymbols.add(new Character('}'));
+        separationSymbols.add(new Character('['));
+        separationSymbols.add(new Character(']'));
+        separationSymbols.add(new Character('\n'));
+        //
+        spaceSymbols.add(new Character(' '));
+        spaceSymbols.add(new Character('\t'));
     }
 
     private String removedString = "";
@@ -69,7 +78,7 @@ public class DeletePreviousWordCommand implements Command {
         curCursor -= 1;
 
         // Delete leading spaces.
-        while((curCursor >= 0) && (editable.charAt(curCursor) == ' ')){
+        while((curCursor >= 0) && (spaceSymbols.contains(editable.charAt(curCursor)))){
             // Delete spaces.
             curCursor--;
         }
@@ -83,7 +92,7 @@ public class DeletePreviousWordCommand implements Command {
             return true;
         }
 
-        if(punctuationSymbols.contains(new Character(editable.charAt(curCursor)))){
+        if(separationSymbols.contains(new Character(editable.charAt(curCursor)))){
             removedString = editable.subSequence(curCursor, initialCursor).toString();
             removeFrom = curCursor;
             editable.delete(curCursor, initialCursor);
@@ -92,14 +101,12 @@ public class DeletePreviousWordCommand implements Command {
         }
 
         // Before spaces is not a punctuation symbol.
-        while((curCursor >= 0) && (!punctuationSymbols.contains(editable.charAt(curCursor)) &&
-                                                editable.charAt(curCursor) != ' ')){
+        while((curCursor >= 0) && (!separationSymbols.contains(editable.charAt(curCursor)) &&
+                                                !spaceSymbols.contains(editable.charAt(curCursor)))){
             curCursor--;
         }
 
-        if(curCursor < 0) {
-            curCursor = 0;
-        }
+        curCursor+=1;
 
         removedString = editable.subSequence(curCursor, initialCursor).toString();
         removeFrom = curCursor;

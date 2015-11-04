@@ -38,7 +38,16 @@
         android:layout_height="wrap_content"
         android:text="test"
         android:id="@+id/test_btn"
-        android:layout_centerVertical="true"
+        android:layout_below="@id/mainEditText"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test_2"
+        android:id="@+id/test_btn2"
+        android:layout_alignTop="@+id/test_btn"
+        android:layout_toRightOf="@+id/test_btn"
+        android:layout_toEndOf="@+id/test_btn" />
 
 </RelativeLayout>
