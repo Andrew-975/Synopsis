@@ -15,20 +15,38 @@ import andstepko.synopsis.R;
 public class Preferences {
 
     public static final File DEFAULT_FILES_DIRECTORY = new File(Environment
-            .getExternalStorageDirectory().getPath() + R.string.app_name);
+            .getExternalStorageDirectory().getPath() + "/Synopsis");
 
-    private File DefaultFilesDirectory;
+    private File defaultFilesDirectory;
     private List<Shortcut> shortcutList;
+
+    public File getDefaultFilesDirectory() {
+        return defaultFilesDirectory;
+    }
 
     public List<Shortcut> getShortcutList() {
         return shortcutList;
     }
 
     public Preferences() {
-        DefaultFilesDirectory = DEFAULT_FILES_DIRECTORY;
+        defaultFilesDirectory = DEFAULT_FILES_DIRECTORY;
+
+        if (!defaultFilesDirectory.exists()) {
+            defaultFilesDirectory.mkdir();
+        }
+
+
+        fillShortcutListWithDefaults();
+    }
+
+    private void fillShortcutListWithDefaults(){
         shortcutList = new ArrayList<Shortcut>();
+
         shortcutList.add(new Shortcut(ShortcutNames.DELETE_PREVIOUS_WORD,
                 new KeyCombination(KeyEvent.KEYCODE_DEL, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.DELETE_PREVIOUS_LETTER,
+                new KeyCombination(KeyEvent.KEYCODE_DEL, false, false, false)));
+
         shortcutList.add(new Shortcut(ShortcutNames.DELETE_NEXT_WORD,
                 new KeyCombination(KeyEvent.KEYCODE_FORWARD_DEL, true, false, false)));
         shortcutList.add(new Shortcut(ShortcutNames.TEST,
@@ -45,5 +63,36 @@ public class Preferences {
                 new KeyCombination(KeyEvent.KEYCODE_V, true, false, false)));
         shortcutList.add(new Shortcut(ShortcutNames.CUT,
                 new KeyCombination(KeyEvent.KEYCODE_X, true, false, false)));
+
+        shortcutList.add(new Shortcut(ShortcutNames.SAVE_FILE,
+                new KeyCombination(KeyEvent.KEYCODE_S, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.NEW_FILE,
+                new KeyCombination(KeyEvent.KEYCODE_N, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.OPEN_FILE,
+                new KeyCombination(KeyEvent.KEYCODE_O, true, false, false)));
+
+
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_ALL,
+                new KeyCombination(KeyEvent.KEYCODE_A, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_NEXT_LETTER,
+                new KeyCombination(KeyEvent.KEYCODE_DPAD_RIGHT, false, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_NEXT_WORD,
+                new KeyCombination(KeyEvent.KEYCODE_DPAD_RIGHT, true, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_PREVIOUS_LETTER,
+                new KeyCombination(KeyEvent.KEYCODE_DPAD_LEFT, false, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_PREVIOUS_WORD,
+                new KeyCombination(KeyEvent.KEYCODE_DPAD_LEFT, true, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_TO_LINE_START,
+                new KeyCombination(KeyEvent.KEYCODE_MOVE_HOME, false, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_TO_LINE_END,
+                new KeyCombination(KeyEvent.KEYCODE_MOVE_END, false, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_TO_START,
+                new KeyCombination(KeyEvent.KEYCODE_MOVE_HOME, true, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_TO_END,
+                new KeyCombination(KeyEvent.KEYCODE_MOVE_END, true, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_NEXT_PAGE,
+                new KeyCombination(KeyEvent.KEYCODE_PAGE_DOWN, false, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SELECT_PREVIOUS_PAGE,
+                new KeyCombination(KeyEvent.KEYCODE_PAGE_UP, false, false, true)));
     }
 }

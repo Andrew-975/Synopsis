@@ -10,7 +10,7 @@ import andstepko.synopsis.SynopsisMainActivity;
 /**
  * Created by andrew on 28.09.15.
  */
-public class DeletePreviousWordCommand implements Command {
+public class DeletePreviousWordCommand extends DeletePreviousCommand {
 
     private static final ArrayList<Character> separationSymbols = new ArrayList<Character>();
     private static final ArrayList<Character> spaceSymbols = new ArrayList<Character>();
@@ -35,35 +35,11 @@ public class DeletePreviousWordCommand implements Command {
         spaceSymbols.add(new Character('\t'));
     }
 
-    private String removedString = "";
-    int removeFrom;
-
     @Override
-    public boolean execute(SynopsisMainActivity synopsisMainActivity) {
+    protected boolean simpleExecution(SynopsisMainActivity synopsisMainActivity){
         boolean result = deletePreviousWord(synopsisMainActivity.getTextField(),
                 synopsisMainActivity.getTextField().getSelectionEnd());
         return result;
-    }
-
-    @Override
-    public boolean unexecute(SynopsisMainActivity synopsisMainActivity) {
-
-        EditText editText = synopsisMainActivity.getTextField();
-        Editable editable = editText.getEditableText();
-        int initialCursor = editText.getSelectionEnd();
-
-        if(removedString.length() == 0){
-            return false;
-        }
-
-        editable.insert(removeFrom, removedString);
-        editText.setSelection(initialCursor + removedString.length());
-        return true;
-    }
-
-    @Override
-    public boolean isStuckable() {
-        return true;
     }
 
     private boolean deletePreviousWord(EditText editText, int initialCursor){
@@ -74,7 +50,6 @@ public class DeletePreviousWordCommand implements Command {
             return false;
         }
 
-        //String secondPart = text.substring(cursorPosition, text.length());
         curCursor -= 1;
 
         // Delete leading spaces.
@@ -84,17 +59,17 @@ public class DeletePreviousWordCommand implements Command {
         }
 
         if(curCursor < 0) {
-            // Got start of the text
-            removedString = editable.subSequence(0, initialCursor).toString();
-            removeFrom = 0;
+            // Got start of the insertedText
+            removedText = editable.subSequence(0, initialCursor).toString();
+            removedFrom = 0;
             editable.delete(0, initialCursor);
             editText.setSelection(0);
             return true;
         }
 
         if(separationSymbols.contains(new Character(editable.charAt(curCursor)))){
-            removedString = editable.subSequence(curCursor, initialCursor).toString();
-            removeFrom = curCursor;
+            removedText = editable.subSequence(curCursor, initialCursor).toString();
+            removedFrom = curCursor;
             editable.delete(curCursor, initialCursor);
             editText.setSelection(curCursor);
             return true;
@@ -108,8 +83,8 @@ public class DeletePreviousWordCommand implements Command {
 
         curCursor+=1;
 
-        removedString = editable.subSequence(curCursor, initialCursor).toString();
-        removeFrom = curCursor;
+        removedText = editable.subSequence(curCursor, initialCursor).toString();
+        removedFrom = curCursor;
         editable.delete(curCursor, initialCursor);
         editText.setSelection(curCursor);
         return true;

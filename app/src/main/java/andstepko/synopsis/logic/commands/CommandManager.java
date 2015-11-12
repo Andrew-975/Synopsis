@@ -1,5 +1,7 @@
 package andstepko.synopsis.logic.commands;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class CommandManager {
     }
 
     private List<Command> commandStack = new ArrayList<Command>();
-    private int currentIndex = 0;
+    private int currentCommandIndex = 0;
     private SynopsisMainActivity synopsisMainActivity;
 
     private CommandManager(SynopsisMainActivity synopsisMainActivity) {
@@ -26,38 +28,65 @@ public class CommandManager {
 
     public boolean execute(Command command){
 
-        if(command.isStuckable()) {
-            // Remove all the following commands in stack.
-            while(currentIndex < commandStack.size()){
+        boolean result = command.execute(synopsisMainActivity);
+
+        if(command.isUnexecutable()) {
+            // Must save the command in the stack somehow.
+
+            // At first: remove all the following commands in stack.
+            while(currentCommandIndex < commandStack.size()){
                 // Have some commands to remove.
-                commandStack.remove(currentIndex);
+                commandStack.remove(currentCommandIndex);
             }
 
+            if((currentCommandIndex > 0) &&
+                        (commandStack.get(currentCommandIndex - 1) instanceof StorableCommand)){
+                // Previous command is storable.
+                StorableCommand previousStorableCommand =
+                        (StorableCommand)commandStack.get(currentCommandIndex - 1);
+
+                if(command instanceof StorableCommand){
+                    // Executing command is storable.
+                    StorableCommand executingStorableCommand = (StorableCommand) command;
+
+                    if(executingStorableCommand.getType() == previousStorableCommand.getType()){
+                        previousStorableCommand.store(executingStorableCommand);
+                        return result;
+                    }
+                }
+            }
+
+            // No previous command or it's not storable || non-storable command is executing ||
+            // previous storable command and executing storable command are different types ||
             commandStack.add(command);
-            currentIndex++;
+            currentCommandIndex++;
         }
-        return command.execute(synopsisMainActivity);
+        return result;
     }
 
     public boolean stepBack(){
-        if((commandStack.size() == 0) || (currentIndex <= 0)){
+        if((commandStack.size() == 0) || (currentCommandIndex <= 0)){
             return false;
         }
 
-        currentIndex--;
-        Command lastCommand = commandStack.get(currentIndex);
+        currentCommandIndex--;
+        Command lastCommand = commandStack.get(currentCommandIndex);
+        if(lastCommand instanceof EmptySeparatorCommand){
+            commandStack.remove(currentCommandIndex);
+            stepBack();
+        }
         return lastCommand.unexecute(synopsisMainActivity);
     }
 
     public boolean stepForward(){
-        if(commandStack.size() <= currentIndex){
+        if(commandStack.size() <= currentCommandIndex){
             // We are probably on the last command.
             return false;
         }
 
         // Have a command to execute it back.
-        boolean result = commandStack.get(currentIndex).execute(synopsisMainActivity);
-        currentIndex++;
+        boolean result = commandStack.get(currentCommandIndex).execute(synopsisMainActivity);
+        currentCommandIndex++;
 
         return result;
     }

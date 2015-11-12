@@ -25,6 +25,11 @@ public class PasteCommand implements Command {
         Context context = (Context)synopsisMainActivity;
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(context.CLIPBOARD_SERVICE);
         ClipData clipData = clipboard.getPrimaryClip();
+
+        if(clipData == null){
+            return false;
+        }
+
         ClipData.Item item = clipData.getItemAt(0);
         String text = item.getText().toString();
 
@@ -38,7 +43,7 @@ public class PasteCommand implements Command {
         int start = Math.min(tempStart, end);
         end = Math.max(tempStart, end);
 
-        // At first, delete selected text.
+        // At first, delete selected insertedText.
         if((start >= 0) && (start != end)){
             removedText = editable.subSequence(start, end);
             editable.delete(start, end);
@@ -67,7 +72,7 @@ public class PasteCommand implements Command {
     }
 
     @Override
-    public boolean isStuckable() {
+    public boolean isUnexecutable() {
         return true;
     }
 }

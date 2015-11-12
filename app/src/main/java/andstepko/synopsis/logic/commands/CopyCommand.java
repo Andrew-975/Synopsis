@@ -21,14 +21,14 @@ public class CopyCommand implements Command {
         int end = editText.getSelectionEnd();
 
         if((tempStart == end) || (tempStart < 0) || (end < 0)){
-            return false;
+            return true;
         }
 
         // Exchange, if they are vice versa.
         int start = Math.min(tempStart, end);
         end = Math.max(tempStart, end);
 
-        editable.subSequence(start, end);
+        //editable.subSequence(start, end);
 
         Context context = (Context)synopsisMainActivity;
         ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(context.CLIPBOARD_SERVICE);
@@ -43,7 +43,7 @@ public class CopyCommand implements Command {
     }
 
     @Override
-    public boolean isStuckable() {
+    public boolean isUnexecutable() {
         return false;
     }
 }

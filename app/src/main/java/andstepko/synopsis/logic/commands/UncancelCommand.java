@@ -19,7 +19,7 @@ public class UncancelCommand implements Command {
     }
 
     @Override
-    public boolean isStuckable() {
+    public boolean isUnexecutable() {
         return false;
     }
 }

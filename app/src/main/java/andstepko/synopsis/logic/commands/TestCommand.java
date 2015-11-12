@@ -30,7 +30,7 @@ public class TestCommand implements Command{
     }
 
     @Override
-    public boolean isStuckable() {
+    public boolean isUnexecutable() {
         return true;
     }
 }

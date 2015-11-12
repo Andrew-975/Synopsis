@@ -1,8 +1,10 @@
 package andstepko.synopsis;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,12 +13,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 import andstepko.synopsis.logic.KeyCombination;
 import andstepko.synopsis.logic.ApplicationPreferences;
-import andstepko.synopsis.logic.Project;
 import andstepko.synopsis.logic.commands.Command;
 import andstepko.synopsis.logic.commands.CommandManager;
-import andstepko.synopsis.logic.commands.DeletePreviousWordCommand;
+import andstepko.synopsis.logic.commands.NewFileCommand;
+import andstepko.synopsis.logic.commands.OpenFileCommand;
+import andstepko.synopsis.logic.commands.SaveFileCommand;
 
 public class MainActivity extends Activity implements SynopsisMainActivity {
 
@@ -28,44 +35,10 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
     //
     Button testButton;
     Button testButton2;
-    private Project project = new Project("");
-
-    //region get-set
-
-    //FIXME removeme
-//    public Project getProjectClone() {
-//        // TODO fix crutch
-//        if(project == null){
-//            return new Project();
-//        }
-//
-//        return new Project(mainEditText.getText().toString(), mainEditText.getSelectionEnd());
-//    }
-//
-//    public void setProject(Project project){
-//        this.project = project;
-//
-//        if(project == null){
-//            return;
-//        }
-//
-//        String text = project.getText();
-//        if(text == null){
-//            return;
-//        }
-//
-//        mainEditText.setText(text);
-//        mainEditText.setSelection(project.getCursor());
-//    }
 
     public static MainActivity getInstance(){
         return INSTANCE;
     }
-
-    public static Context getContext(){
-        return (Context)INSTANCE;
-    }
-    //endregion get-set
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,22 +79,14 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommandManager.getInstance().execute(new DeletePreviousWordCommand());
+                CommandManager.getInstance().execute(new OpenFileCommand());
             }
         });
 
         testButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KeyCombination keyCombination = new KeyCombination(
-                        KeyEvent.KEYCODE_V, true, false, false);
-                logRecord(keyCombination.toString());
-
-                Command command = ApplicationPreferences.getInstance().getCommand(keyCombination);
-                if (command == null) {
-                    return;
-                }
-                CommandManager.getInstance().execute(command);
+                CommandManager.getInstance().execute(new OpenFileCommand());
             }
         });
 
@@ -142,10 +107,42 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
                     return false;
                 }
 
-                CommandManager.getInstance().execute(command);
-                return true;
+                return CommandManager.getInstance().execute(command);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == OPEN_FILE_REQUEST){
+            if ((data != null) && (data.getData() != null)) {
+                Uri fileUri = data.getData();
+
+
+                String text = fileUri.toString();
+                // remove "file://"
+                text = text.subSequence("file://".length(), text.length()).toString();
+                if(fileUri != null) {
+
+                    try {
+                        File f = new File(text);
+                        FileInputStream is = new FileInputStream(f); // Fails on this line
+                        int size = is.available();
+                        byte[] buffer = new byte[size];
+                        is.read(buffer);
+                        is.close();
+                        text = new String(buffer);
+                        //TODO
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -158,6 +155,12 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
         return CommandManager.getInstance();
     }
 
+    @Override
+    public File getDefaultFilesDirectory() {
+        return ApplicationPreferences.getInstance().getPreferences().getDefaultFilesDirectory();
+    }
+
+    @Override
     public void logRecord(String message) {
         logsTextView.setText(message);
     }

@@ -3,14 +3,13 @@ package andstepko.synopsis.logic.commands;
 import andstepko.synopsis.SynopsisMainActivity;
 
 /**
- * Created by andstepko on 03.11.15.
+ * Created by andstepko on 10.11.15.
  */
-public class CancelCommand implements Command {
+public class EmptySeparatorCommand implements StorableCommand {
 
     @Override
     public boolean execute(SynopsisMainActivity synopsisMainActivity) {
-        CommandManager commandManager = synopsisMainActivity.getCommandManager();
-        return commandManager.stepBack();
+        return false;
     }
 
     @Override
@@ -20,6 +19,16 @@ public class CancelCommand implements Command {
 
     @Override
     public boolean isUnexecutable() {
+        return true;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE_EMPTY_SEPARATOR;
+    }
+
+    @Override
+    public boolean store(StorableCommand sCommand) {
         return false;
     }
 }
