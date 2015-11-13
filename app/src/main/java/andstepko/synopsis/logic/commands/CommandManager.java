@@ -90,4 +90,13 @@ public class CommandManager {
 
         return result;
     }
+
+    public boolean clearHistory(){
+        if(commandStack == null || commandStack.size() == 0){
+            return false;
+        }
+        commandStack = new ArrayList<Command>();
+        currentCommandIndex = 0;
+        return true;
+    }
 }

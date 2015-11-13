@@ -13,12 +13,17 @@ import andstepko.synopsis.logic.commands.CommandManager;
 public interface SynopsisMainActivity {
 
     int OPEN_FILE_REQUEST = 100;
+    int REQUEST_CODE_LOAD_FILE = 101;
 
     EditText getTextField();
 
     CommandManager getCommandManager();
 
     File getDefaultFilesDirectory();
+
+    File getCurrentFile();
+
+    void setCurrentFile(File file);
 
     void logRecord(String message);
 }

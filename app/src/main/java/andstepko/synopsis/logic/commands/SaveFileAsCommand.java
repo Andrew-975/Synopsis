@@ -1,8 +1,7 @@
 package andstepko.synopsis.logic.commands;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Environment;
+import android.app.Activity;
+import android.content.Intent;
 import android.text.Editable;
 
 import java.io.File;
@@ -13,18 +12,19 @@ import java.io.PrintWriter;
 import andstepko.synopsis.SynopsisMainActivity;
 
 /**
- * Created by andstepko on 10.11.15.
+ * Created by andstepko on 14.11.15.
  */
-public class SaveFileCommand implements Command {
+public class SaveFileAsCommand implements Command {
 
     @Override
     public boolean execute(SynopsisMainActivity synopsisMainActivity) {
         Editable editable = synopsisMainActivity.getTextField().getEditableText();
+        File defaultDir = synopsisMainActivity.getDefaultFilesDirectory();
 
-        final File file = synopsisMainActivity.getCurrentFile();
-        if(file == null){
-            return new SaveFileAsCommand().execute(synopsisMainActivity);
-        }
+        //FIXME
+        String fileName = "newFile2";
+
+        final File file = new File(defaultDir, fileName + ".synopsis");
 
         synopsisMainActivity.logRecord(file.getAbsolutePath());
 
@@ -40,7 +40,7 @@ public class SaveFileCommand implements Command {
             e.printStackTrace();
         }
 
-        synopsisMainActivity.getCurrentFile();
+        synopsisMainActivity.setCurrentFile(file);
 
         return true;
     }

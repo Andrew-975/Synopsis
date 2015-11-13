@@ -3,6 +3,7 @@ package andstepko.synopsis.logic;
 import java.util.Collection;
 import java.util.HashMap;
 
+import andstepko.synopsis.logic.commands.BiggerTextCommand;
 import andstepko.synopsis.logic.commands.CancelCommand;
 import andstepko.synopsis.logic.commands.Command;
 import andstepko.synopsis.logic.commands.CopyCommand;
@@ -12,9 +13,13 @@ import andstepko.synopsis.logic.commands.DeletePreviousLetterCommand;
 import andstepko.synopsis.logic.commands.DeletePreviousWordCommand;
 import andstepko.synopsis.logic.commands.EmptySeparatorCommand;
 import andstepko.synopsis.logic.commands.NewFileCommand;
+import andstepko.synopsis.logic.commands.NewLineCommand;
 import andstepko.synopsis.logic.commands.OpenFileCommand;
 import andstepko.synopsis.logic.commands.PasteCommand;
+import andstepko.synopsis.logic.commands.SaveFileAsCommand;
 import andstepko.synopsis.logic.commands.SaveFileCommand;
+import andstepko.synopsis.logic.commands.SmallerTextCommand;
+import andstepko.synopsis.logic.commands.TabCommand;
 import andstepko.synopsis.logic.commands.TypeLetterCommand;
 import andstepko.synopsis.logic.commands.UncancelCommand;
 
@@ -22,6 +27,12 @@ import andstepko.synopsis.logic.commands.UncancelCommand;
  * Created by andrew on 13.09.15.
  */
 public class ApplicationPreferences {
+
+    public static char SPACE = ' ';
+    public static char TAB = '\t';
+    public static String TAB_STRING = "\t";
+    public static char EOL = '\n';
+    public static int SPACES_FOR_TAB = 3;
 
     private static HashMap<String, Class> commandHashMap;
     private static int[] letterCodes;
@@ -45,6 +56,7 @@ public class ApplicationPreferences {
         commandHashMap.put(ShortcutNames.CUT, CutCommand.class);
 
         commandHashMap.put(ShortcutNames.SAVE_FILE, SaveFileCommand.class);
+        commandHashMap.put(ShortcutNames.SAVE_FILE_AS, SaveFileAsCommand.class);
         commandHashMap.put(ShortcutNames.NEW_FILE, NewFileCommand.class);
         commandHashMap.put(ShortcutNames.OPEN_FILE, OpenFileCommand.class);
 
@@ -59,6 +71,14 @@ public class ApplicationPreferences {
         commandHashMap.put(ShortcutNames.SELECT_TO_END, EmptySeparatorCommand.class);
         commandHashMap.put(ShortcutNames.SELECT_NEXT_PAGE, EmptySeparatorCommand.class);
         commandHashMap.put(ShortcutNames.SELECT_PREVIOUS_PAGE, EmptySeparatorCommand.class);
+
+        commandHashMap.put(ShortcutNames.NEW_LINE, NewLineCommand.class);
+        commandHashMap.put(ShortcutNames.NEW_LINE_2, NewLineCommand.class);
+
+        commandHashMap.put(ShortcutNames.TAB, TabCommand.class);
+
+        commandHashMap.put(ShortcutNames.BIGGER_TEXT, BiggerTextCommand.class);
+        commandHashMap.put(ShortcutNames.SMALLER_TEXT, SmallerTextCommand.class);
 
         // Letters
         letterCodes = new int[] {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,

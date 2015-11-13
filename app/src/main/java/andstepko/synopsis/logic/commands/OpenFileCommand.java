@@ -18,9 +18,6 @@ public class OpenFileCommand implements Command {
 
     @Override
     public boolean execute(SynopsisMainActivity synopsisMainActivity) {
-        //TODO
-
-
 
         Editable editable = synopsisMainActivity.getTextField().getEditableText();
         File defaultDir = synopsisMainActivity.getDefaultFilesDirectory();

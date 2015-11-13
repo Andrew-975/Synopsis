@@ -23,6 +23,7 @@ public class ShortcutNames {
     public static String CUT = "cut";
 
     public static String SAVE_FILE = "save_file";
+    public static String SAVE_FILE_AS = "save_file_as";
     public static String NEW_FILE = "new_file";
     public static String OPEN_FILE = "open_file";
 
@@ -37,4 +38,12 @@ public class ShortcutNames {
     public static String SELECT_TO_END = "select_to_end";
     public static String SELECT_NEXT_PAGE = "select_next_page";
     public static String SELECT_PREVIOUS_PAGE = "select_previous_page";
+
+    public static String NEW_LINE = "new_line";
+    public static String NEW_LINE_2 = "new_line_2";
+
+    public static String TAB = "tab";
+
+    public static String BIGGER_TEXT = "bigger_text";
+    public static String SMALLER_TEXT = "smaller_text";
 }

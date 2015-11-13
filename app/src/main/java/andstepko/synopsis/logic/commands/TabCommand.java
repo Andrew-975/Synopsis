@@ -4,21 +4,18 @@ import android.text.Editable;
 import android.widget.EditText;
 
 import andstepko.synopsis.SynopsisMainActivity;
+import andstepko.synopsis.logic.ApplicationPreferences;
 
 /**
- * Created by andstepko on 09.11.15.
+ * Created by andstepko on 13.11.15.
  */
-//public class TypeLetterCommand implements StorableCommand{
-public class TypeLetterCommand extends TextInsertingCommand{
+public class TabCommand extends TextInsertingCommand {
 
-    private int keyCode;
-
-    public TypeLetterCommand(int keyCode) {
-        this.keyCode = keyCode;
-    }
+    public static String TAB_STRING = ApplicationPreferences.TAB_STRING;
 
     @Override
     protected boolean simpleExecution(SynopsisMainActivity synopsisMainActivity){
+        //TODO move following part of code into abstract calss!
         EditText editText = synopsisMainActivity.getTextField();
         Editable editable = editText.getEditableText();
 
@@ -36,9 +33,10 @@ public class TypeLetterCommand extends TextInsertingCommand{
             editable.delete(start, end);
         }
 
-        // We can't understand what char to insert, knowing only keyCode =(
+        editable.insert(start, TAB_STRING);
+
         insertionCount++;
-        insertFrom = start;
-        return false;
+        insertFrom = start;        
+        return true;
     }
 }

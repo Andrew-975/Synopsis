@@ -66,6 +66,8 @@ public class Preferences {
 
         shortcutList.add(new Shortcut(ShortcutNames.SAVE_FILE,
                 new KeyCombination(KeyEvent.KEYCODE_S, true, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.SAVE_FILE_AS,
+                new KeyCombination(KeyEvent.KEYCODE_S, true, false, true)));
         shortcutList.add(new Shortcut(ShortcutNames.NEW_FILE,
                 new KeyCombination(KeyEvent.KEYCODE_N, true, false, false)));
         shortcutList.add(new Shortcut(ShortcutNames.OPEN_FILE,
@@ -94,5 +96,18 @@ public class Preferences {
                 new KeyCombination(KeyEvent.KEYCODE_PAGE_DOWN, false, false, true)));
         shortcutList.add(new Shortcut(ShortcutNames.SELECT_PREVIOUS_PAGE,
                 new KeyCombination(KeyEvent.KEYCODE_PAGE_UP, false, false, true)));
+
+        shortcutList.add(new Shortcut(ShortcutNames.NEW_LINE,
+                new KeyCombination(KeyEvent.KEYCODE_ENTER, false, false, false)));
+        shortcutList.add(new Shortcut(ShortcutNames.NEW_LINE_2,
+                new KeyCombination(KeyEvent.KEYCODE_ENTER, false, false, true)));
+
+        shortcutList.add(new Shortcut(ShortcutNames.TAB,
+                new KeyCombination(KeyEvent.KEYCODE_TAB, false, false, false)));
+
+        shortcutList.add(new Shortcut(ShortcutNames.BIGGER_TEXT,
+                new KeyCombination(KeyEvent.KEYCODE_NUMPAD_ADD, true, false, true)));
+        shortcutList.add(new Shortcut(ShortcutNames.SMALLER_TEXT,
+                new KeyCombination(KeyEvent.KEYCODE_NUMPAD_SUBTRACT, true, false, true)));
     }
 }
