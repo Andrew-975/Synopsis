@@ -46,4 +46,6 @@ public class ShortcutNames {
 
     public static String BIGGER_TEXT = "bigger_text";
     public static String SMALLER_TEXT = "smaller_text";
+
+    public static String FIND = "find";
 }

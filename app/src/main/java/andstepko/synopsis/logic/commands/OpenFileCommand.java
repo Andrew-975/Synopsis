@@ -18,20 +18,12 @@ public class OpenFileCommand implements Command {
 
     @Override
     public boolean execute(SynopsisMainActivity synopsisMainActivity) {
-
-        Editable editable = synopsisMainActivity.getTextField().getEditableText();
-        File defaultDir = synopsisMainActivity.getDefaultFilesDirectory();
-
-        final File file = new File(defaultDir, "newFile" + ".synopsis");
-
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("file/*");
         ((Activity)synopsisMainActivity).startActivityForResult(
                 Intent.createChooser(intent, "Select File"),
                 synopsisMainActivity.OPEN_FILE_REQUEST);
-
-
         return true;
     }
 

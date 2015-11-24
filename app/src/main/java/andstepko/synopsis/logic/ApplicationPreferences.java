@@ -12,6 +12,7 @@ import andstepko.synopsis.logic.commands.DeleteNextWordCommand;
 import andstepko.synopsis.logic.commands.DeletePreviousLetterCommand;
 import andstepko.synopsis.logic.commands.DeletePreviousWordCommand;
 import andstepko.synopsis.logic.commands.EmptySeparatorCommand;
+import andstepko.synopsis.logic.commands.FindCommand;
 import andstepko.synopsis.logic.commands.NewFileCommand;
 import andstepko.synopsis.logic.commands.NewLineCommand;
 import andstepko.synopsis.logic.commands.OpenFileCommand;
@@ -79,6 +80,8 @@ public class ApplicationPreferences {
 
         commandHashMap.put(ShortcutNames.BIGGER_TEXT, BiggerTextCommand.class);
         commandHashMap.put(ShortcutNames.SMALLER_TEXT, SmallerTextCommand.class);
+
+        commandHashMap.put(ShortcutNames.FIND, FindCommand.class);
 
         // Letters
         letterCodes = new int[] {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,

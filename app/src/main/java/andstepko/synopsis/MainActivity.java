@@ -32,6 +32,7 @@ import andstepko.synopsis.logic.commands.BiggerTextCommand;
 import andstepko.synopsis.logic.commands.CancelCommand;
 import andstepko.synopsis.logic.commands.Command;
 import andstepko.synopsis.logic.commands.CommandManager;
+import andstepko.synopsis.logic.commands.CutCommand;
 import andstepko.synopsis.logic.commands.DeletePreviousWordCommand;
 import andstepko.synopsis.logic.commands.NewFileCommand;
 import andstepko.synopsis.logic.commands.NewLineCommand;
@@ -47,14 +48,18 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
     public EditText mainEditText;
     private TextView tabsTextView;
     private TextView logsTextView;
+
+    private String openedFileFullPath;
     //
     Button saveButton;
+    Button searchButton;
+
     Button testButton;
     Button testButton2;
     Button testButton3;
 
 
-    private File currentFile;
+    //private File currentFile;
 
     public static MainActivity getInstance(){
         return INSTANCE;
@@ -93,11 +98,18 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
         mainEditText = (EditText)findViewById(R.id.mainEditText);
         logsTextView = (TextView)findViewById(R.id.logsTextView);
         saveButton = (Button)findViewById(R.id.save_btn);
+        searchButton = (Button)findViewById(R.id.search_btn);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CommandManager.getInstance().execute(new SaveFileCommand());
+            }
+        });
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Search command
             }
         });
         // FIXME removeme after debug
@@ -108,16 +120,19 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //CommandManager.getInstance().execute(new DeletePreviousWordCommand());
-                getTextField().setText(Html.fromHtml("<b>" + "bold" + "</b>" + "<br />" +
-                        "<small>" + "small" + "</small>" + "<br />"));
+                CommandManager.getInstance().execute(new SaveFileAsCommand());
+
+//                getTextField().setText(Html.fromHtml(
+//                        getTextField().getText().toString() + "\n" +
+//                                "<b>" + "bold" + "</b>" + "<br />" +
+//                        "<small>" + "small" + "</small>" + "<br />"));
             }
         });
 
         testButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommandManager.getInstance().execute(new SaveFileAsCommand());
+                CommandManager.getInstance().execute(new SaveFileCommand());
             }
         });
 
@@ -168,6 +183,9 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
         if(requestCode == OPEN_FILE_REQUEST){
             openFile(data);
         }
+        else if(requestCode == SAVE_FILE_AS_REQUEST){
+            saveFileAs(data);
+        }
         else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -193,6 +211,7 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
                     byte[] buffer = new byte[size];
                     is.read(buffer);
                     is.close();
+
                     text = new String(buffer);
                     //TODO
 
@@ -211,14 +230,71 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
                 mainEditText.setText(text);
                 logRecord("opened file: " + fullFileName);
 
-                currentFile = file;
-                tabsTextView.setText(file.getName());
+
+                setOpenedFileFullPath(fullFileName);
 
                 return true;
             }
         }
 
         return false;
+    }
+
+    private boolean saveFileAs(Intent data){
+        if ((data != null) && (data.getData() != null)) {
+
+            Uri fileUri = data.getData();
+            String fullFileName = new String(fileUri.toString().getBytes(), Charset.forName("UTF-8"));
+
+            String text;
+            File file;
+
+            // remove "file://"
+            fullFileName = fullFileName.subSequence("file://".length(), fullFileName.length()).toString();
+
+            openedFileFullPath = fullFileName;
+
+            return new SaveFileCommand().execute(this);
+
+//            if (fileUri != null) {
+//
+//                try {
+//                    file = new File(fullFileName);
+//                    FileInputStream is = new FileInputStream(file);
+//                    int size = is.available();
+//                    byte[] buffer = new byte[size];
+//                    is.read(buffer);
+//                    is.close();
+//
+//                    openedFileFullPath = fullFileName;
+//
+//                    text = new String(buffer);
+//                    //TODO
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(this, "Error opening file!", Toast.LENGTH_SHORT).show();
+//                    return false;
+//                }
+//
+//                if (text == null) {
+//                    Toast.makeText(this, "Error opening file!", Toast.LENGTH_SHORT).show();
+//                    return false;
+//                }
+//
+//                getCommandManager().clearHistory();
+//                mainEditText.setText(text);
+//                logRecord("opened file: " + fullFileName);
+//
+//                currentFile = file;
+//                tabsTextView.setText(file.getName());
+//
+//                return true;
+//            }
+        }
+        else{
+            return false;
+        }
     }
 
     @Override
@@ -237,17 +313,23 @@ public class MainActivity extends Activity implements SynopsisMainActivity {
     }
 
     @Override
-    public File getCurrentFile() {
-        return currentFile;
-    }
-
-    @Override
-    public void setCurrentFile(File file) {
-        currentFile = file;
-    }
-
-    @Override
     public void logRecord(String message) {
         logsTextView.setText(message);
+    }
+
+    @Override
+    public void logRecordStuck(String message) {
+        logsTextView.setText(logsTextView.getText().toString() + message);
+    }
+
+    @Override
+    public String getCurrentOpenedFile() {
+        return openedFileFullPath;
+    }
+
+    @Override
+    public void setOpenedFileFullPath(String openedFileFullPath) {
+        this.openedFileFullPath = openedFileFullPath;
+        tabsTextView.setText(openedFileFullPath);
     }
 }

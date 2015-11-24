@@ -109,5 +109,8 @@ public class Preferences {
                 new KeyCombination(KeyEvent.KEYCODE_NUMPAD_ADD, true, false, true)));
         shortcutList.add(new Shortcut(ShortcutNames.SMALLER_TEXT,
                 new KeyCombination(KeyEvent.KEYCODE_NUMPAD_SUBTRACT, true, false, true)));
+
+        shortcutList.add(new Shortcut(ShortcutNames.FIND,
+                new KeyCombination(KeyEvent.KEYCODE_F, true, false, false)));
     }
 }

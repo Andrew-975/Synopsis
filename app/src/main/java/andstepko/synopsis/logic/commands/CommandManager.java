@@ -65,7 +65,7 @@ public class CommandManager {
     }
 
     public boolean stepBack(){
-        if((commandStack.size() == 0) || (currentCommandIndex <= 0)){
+        if((currentCommandIndex <= 0) || (commandStack.size() == 0)){
             return false;
         }
 
@@ -73,8 +73,9 @@ public class CommandManager {
         Command lastCommand = commandStack.get(currentCommandIndex);
         if(lastCommand instanceof EmptySeparatorCommand){
             commandStack.remove(currentCommandIndex);
-            stepBack();
+            return stepBack();
         }
+
         return lastCommand.unexecute(synopsisMainActivity);
     }
 
@@ -98,5 +99,13 @@ public class CommandManager {
         commandStack = new ArrayList<Command>();
         currentCommandIndex = 0;
         return true;
+    }
+
+    private void logState(){
+        synopsisMainActivity.logRecord("i=>" + currentCommandIndex);
+        for(int i = 0; i < commandStack.size(); i++){
+            synopsisMainActivity.logRecordStuck("\n" +
+                    commandStack.get(i).getClass().toString());
+        }
     }
 }

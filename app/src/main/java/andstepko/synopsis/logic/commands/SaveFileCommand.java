@@ -21,7 +21,12 @@ public class SaveFileCommand implements Command {
     public boolean execute(SynopsisMainActivity synopsisMainActivity) {
         Editable editable = synopsisMainActivity.getTextField().getEditableText();
 
-        final File file = synopsisMainActivity.getCurrentFile();
+        String fileName = synopsisMainActivity.getCurrentOpenedFile();
+        if(fileName == null){
+            return new SaveFileAsCommand().execute(synopsisMainActivity);
+        }
+
+        final File file = new File(fileName);
         if(file == null){
             return new SaveFileAsCommand().execute(synopsisMainActivity);
         }
@@ -39,8 +44,6 @@ public class SaveFileCommand implements Command {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        synopsisMainActivity.getCurrentFile();
 
         return true;
     }
